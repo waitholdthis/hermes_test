@@ -102,16 +102,17 @@
             justify-content: center;
             overflow: hidden;
             background: radial-gradient(ellipse at center, var(--ink-mid) 0%, var(--ink) 70%);
+            will-change: transform;
         }
 
         .hero::before {
             content: '';
             position: absolute;
-            inset: 0;
+            inset: -20%;
             background: 
                 radial-gradient(circle at 20% 50%, rgba(201, 169, 98, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 80% 50%, rgba(201, 169, 98, 0.05) 0%, transparent 50%);
-            animation: ambientDrift 20s ease-in-out infinite;
+            animation: ambientDrift 24s ease-in-out infinite;
         }
 
         @keyframes ambientDrift {
@@ -136,6 +137,7 @@
             z-index: 2;
             text-align: center;
             padding: 2rem;
+            will-change: transform, opacity;
         }
 
         .hero-eyebrow {
@@ -146,7 +148,7 @@
             color: var(--accent);
             margin-bottom: 2rem;
             opacity: 0;
-            animation: fadeUp 1.2s var(--ease-expo) 0.3s forwards;
+            animation: hymnReveal 1.1s var(--ease-expo) 0.2s forwards;
         }
 
         .hero-title {
@@ -157,7 +159,7 @@
             letter-spacing: -0.03em;
             margin-bottom: 1.5rem;
             opacity: 0;
-            animation: fadeUp 1.4s var(--ease-expo) 0.5s forwards;
+            animation: hymnReveal 1.3s var(--ease-expo) 0.45s forwards;
         }
 
         .hero-title em {
@@ -168,11 +170,11 @@
         .hero-subtitle {
             font-size: clamp(0.9rem, 2vw, 1.1rem);
             color: var(--text-dim);
-            max-width: 50ch;
+            max-width: 60ch;
             margin: 0 auto 3rem;
             font-weight: 300;
             opacity: 0;
-            animation: fadeUp 1.4s var(--ease-expo) 0.7s forwards;
+            animation: hymnReveal 1.3s var(--ease-expo) 0.7s forwards;
         }
 
         .hero-cta {
@@ -189,9 +191,9 @@
             text-transform: uppercase;
             position: relative;
             overflow: hidden;
-            transition: all 0.6s var(--ease-expo);
+            transition: color 0.7s var(--ease-expo), border-color 0.7s var(--ease-expo);
             opacity: 0;
-            animation: fadeUp 1.4s var(--ease-expo) 0.9s forwards;
+            animation: hymnReveal 1.3s var(--ease-expo) 0.9s forwards;
         }
 
         .hero-cta::before {
@@ -201,25 +203,47 @@
             background: var(--accent);
             transform: scaleX(0);
             transform-origin: right;
-            transition: transform 0.6s var(--ease-expo);
+            transition: transform 0.65s var(--ease-expo);
             z-index: -1;
+        }
+
+        .hero-cta::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 1px solid var(--accent);
+            opacity: 0;
+            transform: scale(1.08);
+            transition: transform 0.7s var(--ease-expo), opacity 0.7s var(--ease-expo);
         }
 
         .hero-cta:hover {
             color: var(--ink);
+            border-color: var(--accent);
         }
         .hero-cta:hover::before {
             transform: scaleX(1);
             transform-origin: left;
         }
+        .hero-cta:hover::after {
+            opacity: 0.6;
+            transform: scale(1);
+        }
+
+        .hero-cta span {
+            transition: transform 0.6s var(--ease-expo);
+        }
+        .hero-cta:hover span {
+            transform: translateX(-2px);
+        }
 
         .hero-cta svg {
             width: 16px;
             height: 16px;
-            transition: transform 0.4s var(--ease-expo);
+            transition: transform 0.6s var(--ease-expo);
         }
         .hero-cta:hover svg {
-            transform: translateX(4px);
+            transform: translateX(6px);
         }
 
         .scroll-indicator {
@@ -232,14 +256,14 @@
             align-items: center;
             gap: 0.75rem;
             opacity: 0;
-            animation: fadeIn 1.4s var(--ease-expo) 1.2s forwards;
+            animation: hymnReveal 1.3s var(--ease-expo) 1.2s forwards;
         }
 
         .scroll-line {
             width: 1px;
             height: 60px;
             background: linear-gradient(to bottom, var(--accent), transparent);
-            animation: scrollPulse 2s ease-in-out infinite;
+            animation: scrollPulse 2.4s ease-in-out infinite;
         }
 
         @keyframes scrollPulse {
@@ -247,10 +271,10 @@
             50% { transform: scaleY(0.5); opacity: 0.5; }
         }
 
-        @keyframes fadeUp {
+        @keyframes hymnReveal {
             from {
                 opacity: 0;
-                transform: translateY(40px);
+                transform: translateY(36px);
             }
             to {
                 opacity: 1;
@@ -258,9 +282,67 @@
             }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes hymnRevealFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-28px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ==================== MOTION UTILITIES ==================== */
+        .will-reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition:
+                opacity 0.9s cubic-bezier(0.19, 1, 0.22, 1),
+                transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .will-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .will-reveal-stagger > * {
+            opacity: 0;
+            transform: translateY(28px);
+            transition:
+                opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+                transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .will-reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+        .will-reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.08s; opacity: 1; transform: translateY(0); }
+        .will-reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.16s; opacity: 1; transform: translateY(0); }
+        .will-reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+        .will-reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.32s; opacity: 1; transform: translateY(0); }
+
+        .reveal-scale {
+            transform: scale(0.96);
+            opacity: 0;
+            transition:
+                opacity 1s cubic-bezier(0.19, 1, 0.22, 1),
+                transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .reveal-scale.is-visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .will-reveal, .will-reveal-stagger > *, .reveal-scale {
+                opacity: 1;
+                transform: none;
+            }
         }
 
         /* ==================== SECTIONS ==================== */
@@ -810,8 +892,8 @@
     </section>
 
     <!-- Manifesto -->
-    <section class="manifesto">
-        <div class="container">
+    <section class="manifesto will-reveal">
+        <div class="container will-reveal-stagger">
             <p class="manifesto-text">
                 We believe the best interfaces <em>breathe</em> — where contrast creates meaning, <em>motion</em> reveals intention, and restraint speaks louder than noise.
             </p>
@@ -822,14 +904,14 @@
     </section>
 
     <!-- Works -->
-    <section class="works" id="works">
-        <div class="container">
-            <div class="section-header">
+    <section class="works will-reveal" id="works">
+        <div class="container will-reveal-stagger">
+            <div class="section-header reveal-scale">
                 <span class="section-label">Selected Works</span>
                 <span class="section-number">001 — 004</span>
             </div>
 
-            <div class="works-grid">
+            <div class="works-grid will-reveal-stagger">
                 <article class="work-card work-card-large" data-delay="0">
                     <div class="work-visual">
                         <div class="work-bg work-gradient-1"></div>
@@ -896,10 +978,10 @@
     </section>
 
     <!-- Philosophy / About -->
-    <section class="philosophy">
-        <div class="container">
+    <section class="philosophy will-reveal">
+        <div class="container will-reveal-stagger">
             <div class="philosophy-grid">
-                <div class="philosophy-left">
+                <div class="philosophy-left reveal-scale">
                     <span class="philosophy-number">002 — Our Approach</span>
                     <h2 class="philosophy-headline">
                         Craft is the <em>silence</em> between notes.
@@ -911,7 +993,7 @@
                         Every element earns its place. Every motion serves the narrative. We strip away the unnecessary until only the essential remains — not because it's minimal, but because it's true.
                     </p>
                 </div>
-                <div class="philosophy-right">
+                <div class="philosophy-right reveal-scale">
                     <div class="philosophy-portrait"></div>
                     <div class="philosophy-signature">— ATELIER NOIR</div>
                 </div>
@@ -966,7 +1048,21 @@
     </footer>
 
     <script>
-        // Reveal on scroll
+        // Section reveal on scroll
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+        document.querySelectorAll('.will-reveal, .will-reveal-stagger').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Previous card reveal preserved
         const observerOptions = {
             threshold: 0.15,
             rootMargin: '0px 0px -80px 0px'
