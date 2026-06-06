@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATELIER NOIR — Origin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #0a0a0b;
+            --ink-mid: #1c1c1f;
+            --surface: #0f0f11;
+            --muted: #6b6b70;
+            --text: #e8e8ea;
+            --text-dim: #98989d;
+            --accent: #c9a962;
+            --accent-dim: rgba(201, 169, 98, 0.15);
+            --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        html {
+            background: var(--ink);
+            color: var(--text);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--sans);
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .grain {
+            position: fixed;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            animation: grain 8s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
+        }
+
+        .origin {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10rem 2rem;
+        }
+
+        .origin-header {
+            text-align: center;
+            margin-bottom: 12rem;
+            position: relative;
+        }
+
+        .origin-eyebrow {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+
+        .origin-title {
+            font-family: var(--serif);
+            font-size: clamp(3rem, 8vw, 7rem);
+            line-height: 1;
+            letter-spacing: -0.03em;
+            font-weight: 400;
+        }
+
+        .origin-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .origin-meta {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            color: var(--muted);
+            margin-top: 3rem;
+            text-transform: uppercase;
+        }
+
+        .chapter {
+            position: relative;
+            margin-bottom: 16rem;
+        }
+
+        .chapter:last-child {
+            margin-bottom: 8rem;
+        }
+
+        .chapter-media {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            margin-bottom: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .chapter-media img.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chapter-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(10,10,11,0.8) 100%);
+            pointer-events: none;
+        }
+
+        .chapter-media.left {
+            margin-left: -10%;
+            width: 110%;
+        }
+
+        .chapter-media.right {
+            margin-left: 10%;
+            width: 90%;
+        }
+
+        .chapter-media.full {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .chapter-date {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .chapter-headline {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.15;
+            margin-bottom: 2.5rem;
+            max-width: 14ch;
+            letter-spacing: -0.02em;
+        }
+
+        .chapter-headline em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .chapter-body {
+            font-size: 1.15rem;
+            line-height: 1.75;
+            color: var(--text-dim);
+            max-width: 60ch;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-body strong {
+            color: var(--text);
+            font-weight: 400;
+        }
+
+        .chapter-quote {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            line-height: 1.3;
+            color: var(--text);
+            margin: 5rem 0;
+            padding-left: 3rem;
+            border-left: 1px solid var(--accent);
+            max-width: 30ch;
+        }
+
+        .chapter-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--ink-mid), transparent);
+            margin: 8rem 0;
+        }
+
+        .closing {
+            text-align: center;
+            padding: 10rem 2rem;
+            position: relative;
+        }
+
+        .closing::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            filter: blur(100px);
+        }
+
+        .closing-text {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            line-height: 1.3;
+            font-style: italic;
+            color: var(--text);
+            position: relative;
+            z-index: 2;
+        }
+
+        .closing-text em {
+            font-style: normal;
+            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 0.5em;
+            letter-spacing: 0.3em;
+            display: block;
+            margin-top: 2rem;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .origin {
+                padding: 6rem 1.5rem;
+            }
+            .chapter {
+                margin-bottom: 8rem;
+            }
+            .chapter-media.left,
+            .chapter-media.right {
+                margin-left: 0;
+                width: 100%;
+            }
+            .chapter-headline {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="grain"></div>
+
+    <main class="origin">
+        <header class="origin-header">
+            <p class="origin-eyebrow">The practice story</p>
+            <h1 class="origin-title">Before the <em>work</em><br>there was the quiet.</h1>
+            <p class="origin-meta">Paris · Tokyo · New York — 2014 to present</p>
+        </header>
+
+        <article class="chapter">
+            <figure class="chapter-media full">
+                <img src="assets/paris-2014.png" alt="Paris walk-up 2014">
+            </figure>
+            <p class="chapter-date">03.2014 — Paris, 3ème arrondissement</p>
+            <h2 class="chapter-headline">The studio began in a fifth-floor walk-up on Rue de Bretagne, above a boutique that smelled of leather and tungsten.</h2>
+            <p class="chapter-body">
+                The space had no elevator, no heating worth mentioning, and a single window that looked out onto a courtyard the size of a postage stamp. Two people ran it then: <strong>Margot</strong>, who came from film, and <strong>Ren</strong>, who came from code. They had no clients, no template, and three weeks of severance between them.
+            </p>
+            <p class="chapter-body">
+                They watched dailies in the morning, wrote loops in the afternoon, and argued about kerning at night. The apartment had paper taped to the walls — charcoal studies of light, wireframes in red ink, notes in three languages.
+            </p>
+        </article>
+
+        <div style="text-align:center;padding:4rem 0;">
+            <p style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.4em;color:var(--accent);">2014 — The work begins in shadow</p>
+        </div>
+
+        <article class="chapter">
+            <figure class="chapter-media left">
+                <img src="assets/night-code.png" alt="Night code 2014">
+            </figure>
+            <p class="chapter-date">07.2014 — First commission</p>
+            <h2 class="chapter-headline">A small fashion house asked for something minimal. Margot wanted film. Ren wanted motion. They compromised on <em>stillness</em>.</h2>
+            <p class="chapter-body">
+                They built a site that never moved unless the user moved it. The client cried at the presentation. Not because it was emotional. Because it was <strong>quiet</strong>.
+            </p>
+            <blockquote class="chapter-quote">"The first time I understood that motion is not decoration — it is meaning."</blockquote>
+        </article>
+
+        <article class="chapter">
+            <figure class="chapter-media right">
+                <img src="assets/match-tokyo.png" alt="Tokyo match 2020">
+            </figure>
+            <p class="chapter-date">2020 — Tokyo</p>
+            <h2 class="chapter-headline">The brief was ten words: "Make it feel like walking into a dark room and finding a match."</h2>
+            <p class="chapter-body">
+                They moved Margot to Tokyo for three months. Ren stayed in Paris and wrote the WebGL layer. The site load time was eleven seconds. No one complained. <strong>Everyone waited.</strong>
+            </p>
+            <p class="chapter-body">
+                The project won at Awwwards. The client called it "the first thing we ever made that felt like the brand." Margot and Ren later agreed they had not made the brand. They had made a <em>space</em> where the brand could breathe.
+            </p>
+        </article>
+
+        <article class="chapter">
+            <figure class="chapter-media full">
+                <img src="assets/three-cities.png" alt="Three cities dusk">
+            </figure>
+            <p class="chapter-date">2021–2025 — Expansion</p>
+            <h2 class="chapter-headline">They added a third partner, <strong>Lien</strong>, who had spent a decade in product design at a company nobody remembers.</h2>
+            <p class="chapter-body">
+                Lien arrived with two plants, one theory about color, and an intolerance for looseness. Tokyo formalized. New York followed — a residency in a loft in SoHo where the radiator hissed and the light was better. London stayed informal. They never opened an office there. They just went.
+            </p>
+        </article>
+
+        <article class="chapter">
+            <p class="chapter-date">2026 — Today</p>
+            <h2 class="chapter-headline">They still answer emails themselves. They still review every frame. They still measure projects not by revenue but by how long people <em>stare</em> at them.</h2>
+            <p class="chapter-body">
+                They believe that the best interface is the one you feel before you understand it. That motion is not decoration — it is meaning. That constraint is not limitation — it is language.
+            </p>
+            <p class="chapter-body">
+                They still don’t pitch. They still don’t take meetings that start with "What’s your process?" They still eat soup when nothing else is available.
+            </p>
+            <p class="chapter-body">
+                And the window in Paris — the one in the original walk-up — still exists. The building was renovated in 2023. The window was <strong>moved seven centimeters to the left</strong>. Margot still mentions it when she wants to prove that nothing stays the same, not even brick.
+            </p>
+
+            <div class="chapter-quote">
+                "This is not a success story.<br>It is a practice story."
+                <br><br>
+                <strong style="font-style: normal; font-family: var(--mono); font-size: 0.4em; letter-spacing: 0.2em; color: var(--muted);">— The work continues.</strong>
+            </div>
+        </article>
+
+        <footer class="closing">
+            <p class="closing-text">
+                ATELIER <em>NOIR</em>
+                <em>MMXXVI</em>
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.tagName === 'IMG') {
+                        entry.target.classList.add('revealed');
+                    } else {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        document.querySelectorAll('.chapter').forEach(chapter => {
+            chapter.style.opacity = '0';
+            chapter.style.transform = 'translateY(40px)';
+            chapter.style.transition = 'opacity 1s cubic-bezier(0.19, 1, 0.22, 1), transform 1s cubic-bezier(0.19, 1, 0.22, 1)';
+            observer.observe(chapter);
+        });
+
+        document.querySelectorAll('.chapter-media img').forEach(img => {
+            observer.observe(img);
+        });
+
+        document.querySelector('.origin-title').style.opacity = '1';
+    </script>
+</body>
+</html>
