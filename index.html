@@ -1002,21 +1002,21 @@
     </section>
 
     <!-- Numbers -->
-    <section class="numbers">
-        <div class="numbers-grid">
-            <div class="number-item">
+    <section class="numbers will-reveal">
+        <div class="numbers-grid will-reveal-stagger">
+            <div class="number-item reveal-scale">
                 <div class="number-value" data-count="147">0</div>
                 <div class="number-label">Projects</div>
             </div>
-            <div class="number-item">
+            <div class="number-item reveal-scale">
                 <div class="number-value" data-count="38">0</div>
                 <div class="number-label">Awards</div>
             </div>
-            <div class="number-item">
+            <div class="number-item reveal-scale">
                 <div class="number-value" data-count="12">0</div>
                 <div class="number-label">Years</div>
             </div>
-            <div class="number-item">
+            <div class="number-item reveal-scale">
                 <div class="number-value" data-count="4">0</div>
                 <div class="number-label">Cities</div>
             </div>
@@ -1024,14 +1024,14 @@
     </section>
 
     <!-- Contact -->
-    <section class="contact">
-        <div class="contact-inner">
-            <div class="contact-label">003 — Begin a Collaboration</div>
-            <h2 class="contact-headline">
+    <section class="contact will-reveal">
+        <div class="contact-inner will-reveal-stagger">
+            <div class="contact-label reveal-scale">003 — Begin a Collaboration</div>
+            <h2 class="contact-headline reveal-scale">
                 Let's create something <em>extraordinary</em>
             </h2>
-            <a href="mailto:hello@ateliernoir.studio" class="contact-email">hello@ateliernoir.studio</a>
-            <div class="contact-meta">
+            <a href="mailto:hello@ateliernoir.studio" class="contact-email reveal-scale">hello@ateliernoir.studio</a>
+            <div class="contact-meta reveal-scale">
                 <span>Paris</span>
                 <span>Tokyo</span>
                 <span>New York</span>
@@ -1062,27 +1062,19 @@
             revealObserver.observe(el);
         });
 
-        // Previous card reveal preserved
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: '0px 0px -80px 0px'
-        };
-
-        const revealObserver = new IntersectionObserver((entries) => {
+        // Reveal on scroll for grid/hover work cards
+        const cardObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const delay = entry.target.dataset.delay || 0;
                     setTimeout(() => {
                         entry.target.classList.add('revealed');
                     }, delay);
-                    revealObserver.unobserve(entry.target);
+                    cardObserver.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.work-card').forEach(card => {
-            revealObserver.observe(card);
-        });
+        }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+        document.querySelectorAll('.work-card').forEach(card => cardObserver.observe(card));
 
         // Counter animation
         const counterObserver = new IntersectionObserver((entries) => {
